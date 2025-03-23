@@ -1,10 +1,10 @@
-name: Deploy Gradio Chatbot
+name: Deploy Gradio Chatbot to Hugging Face
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # Deploy on push to main branch
+  workflow_dispatch:  # Allow manual deployment
 
 jobs:
   deploy:
@@ -23,18 +23,23 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run Gradio Chatbot
+      - name: Configure Git for Hugging Face
         run: |
-          python chatbot.py &  # Start the chatbot in the background
-          sleep 10  # Wait for the server to start
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
 
       - name: Deploy to Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git clone https://huggingface.co/spaces/your-hf-space-name
-          cp -r * your-hf-space-name/
-          cd your-hf-space-name
+          # Clone your Hugging Face Space
+          git clone https://huggingface.co/spaces/aniloooooo/gradio-ai-chatbot hf-repo
+          
+          # Copy new files
+          cp -r * hf-repo/
+          cd hf-repo
+          
+          # Commit and push changes
           git add .
-          git commit -m "Update chatbot"
+          git commit -m "Auto-deploy from GitHub Actions"
           git push
