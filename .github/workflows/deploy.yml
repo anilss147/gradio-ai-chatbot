@@ -1,0 +1,40 @@
+name: Deploy Gradio Chatbot
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Gradio Chatbot
+        run: |
+          python chatbot.py &  # Start the chatbot in the background
+          sleep 10  # Wait for the server to start
+
+      - name: Deploy to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git clone https://huggingface.co/spaces/your-hf-space-name
+          cp -r * your-hf-space-name/
+          cd your-hf-space-name
+          git add .
+          git commit -m "Update chatbot"
+          git push
