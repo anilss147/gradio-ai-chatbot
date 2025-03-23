@@ -11,5 +11,5 @@ A simple AI chatbot UI built with Gradio, powered by **Ollama (LLaMA/Mistral)** 
 ## 📦 Installation
 1. Clone the repo:  
    ```sh
-   git clone https://github.com/your-username/gradio-chatbot.git
+   git clone https://github.com/anilss147/gradio-chatbot.git
    cd gradio-chatbot
