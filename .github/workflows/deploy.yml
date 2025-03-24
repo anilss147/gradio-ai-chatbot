@@ -3,8 +3,8 @@ name: Deploy Gradio Chatbot to Hugging Face
 on:
   push:
     branches:
-      - main  # Deploy on push to main branch
-  workflow_dispatch:  # Allow manual deployment
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -23,7 +23,7 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Install Git LFS  # 🔹 IMPORTANT for Hugging Face repos
+      - name: Install Git LFS
         run: |
           sudo apt-get update
           sudo apt-get install -y git-lfs
@@ -38,17 +38,5 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Clone the Hugging Face Space
-          git clone https://huggingface.co/spaces/aniloooooo/gradio-ai-chatbot hf-repo
-          cd hf-repo
-          
-          # Set up authentication
-          git remote set-url origin https://user:${HF_TOKEN}@huggingface.co/spaces/aniloooooo/gradio-ai-chatbot
-          
-          # Copy new files (excluding .git directory)
-          rsync -av --exclude='.git' ../ hf-repo/
-          
-          # Commit and push changes
-          git add .
-          git commit -m "Auto-deploy from GitHub Actions" || echo "No changes to commit"
-          git push origin main
+          # Clone the Hugging Face Space using token authentication
+          git clone https://user:${HF_TOKEN}@huggingface.co/spaces/aniloooooo/gradio_
