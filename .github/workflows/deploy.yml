@@ -32,14 +32,14 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Clone your Hugging Face Space
-          git clone https://huggingface.co/spaces/aniloooooo/gradio-ai-chatbot hf-repo
+          # Clone using authentication
+          git clone https://user:${HF_TOKEN}@huggingface.co/spaces/aniloooooo/gradio-ai-chatbot hf-repo
           
-          # Copy new files
-          cp -r * hf-repo/
+          # Copy new files (excluding .git directory)
+          rsync -av --exclude='.git' . hf-repo/
           cd hf-repo
           
           # Commit and push changes
           git add .
-          git commit -m "Auto-deploy from GitHub Actions"
-          git push
+          git commit -m "Auto-deploy from GitHub Actions" || echo "No changes to commit"
+          git push origin main
